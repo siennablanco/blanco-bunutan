@@ -18,7 +18,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { giverId } = req.body || {};
+  const { giverId, updatedAt = Date.now() } = req.body || {};
   if (!giverId) {
     return res.status(400).json({ error: 'Missing giverId' });
   }
@@ -26,7 +26,6 @@ export default async function handler(req, res) {
   // 1. If Vercel KV is configured
   if (KV_URL && KV_TOKEN) {
     try {
-      // Get current state
       const getRes = await fetch(`${KV_URL}/get/${STATE_KEY}`, {
         headers: { Authorization: `Bearer ${KV_TOKEN}` }
       });
@@ -40,8 +39,8 @@ export default async function handler(req, res) {
       if (!drawnIds.includes(giverId)) {
         drawnIds.push(giverId);
         state.drawnIds = drawnIds;
+        state.updatedAt = updatedAt;
         
-        // Save back to KV
         await fetch(`${KV_URL}/set/${STATE_KEY}`, {
           method: 'POST',
           headers: { 
@@ -68,6 +67,7 @@ export default async function handler(req, res) {
       if (!drawnIds.includes(giverId)) {
         drawnIds.push(giverId);
         state.drawnIds = drawnIds;
+        state.updatedAt = updatedAt;
         fs.writeFileSync(localFile, JSON.stringify(state, null, 2), 'utf-8');
       }
       return res.status(200).json({ success: true, drawnIds: state.drawnIds });

@@ -747,7 +747,15 @@ export default function OrganizerModal({
                     />
                   </div>
 
-                  {/* Change PIN */}
+                  {/* Cloud DB Info */}
+                  <div className="pt-2 border-t border-slate-200 space-y-1.5 bg-slate-50 p-3 rounded-2xl text-xs text-slate-600">
+                    <span className="font-bold text-slate-800 flex items-center gap-1">
+                      ☁️ Paalala sa Pag-save sa Vercel:
+                    </span>
+                    <p className="text-[11px] text-slate-500">
+                      Naka-save ito agad sa iyong browser. Para mai-save sa Cloud sa Vercel upang makita ng lahat ng kamag-anak sa ibang cellphone, i-click lamang ang <strong>Storage ➔ KV</strong> sa Vercel dashboard.
+                    </p>
+                  </div>
                   <div className="pt-2 border-t border-slate-200 space-y-2">
                     <label className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
                       <KeyRound className="w-4 h-4 text-red-600" />

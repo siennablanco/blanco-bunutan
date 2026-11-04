@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import SnowEffect from './components/SnowEffect';
-import MusicPlayer from './components/MusicPlayer';
+import SoundEffectsToggle from './components/MusicPlayer';
 import DrawScreen from './components/DrawScreen';
 import OrganizerModal from './components/OrganizerModal';
 import { 
@@ -8,12 +8,11 @@ import {
   DEFAULT_EXCLUSIONS, 
   generateValidPairings 
 } from './utils/secretSanta';
-import { audioManager } from './utils/audio';
 
 const STORAGE_KEY_PREFIX = 'blanco_bunutan_2026_';
 
 export default function App() {
-  // State synchronized with central server
+  // State synchronized with central server & localStorage
   const [participants, setParticipants] = useState(() => {
     const saved = localStorage.getItem(STORAGE_KEY_PREFIX + 'participants');
     return saved ? JSON.parse(saved) : DEFAULT_PARTICIPANTS;
@@ -51,43 +50,92 @@ export default function App() {
     return localStorage.getItem(STORAGE_KEY_PREFIX + 'organizer_pin') || '1234';
   });
 
+  const [updatedAt, setUpdatedAt] = useState(() => {
+    return parseInt(localStorage.getItem(STORAGE_KEY_PREFIX + 'updated_at') || '0', 10);
+  });
+
+  const localUpdatedAtRef = useRef(updatedAt);
   const [isOrganizerOpen, setIsOrganizerOpen] = useState(false);
-  const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const [isServerSynced, setIsServerSynced] = useState(false);
 
+  // Sync to LocalStorage whenever state changes
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY_PREFIX + 'participants', JSON.stringify(participants));
+  }, [participants]);
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY_PREFIX + 'exclusions', JSON.stringify(exclusions));
+  }, [exclusions]);
+
+  useEffect(() => {
+    if (pairings) {
+      localStorage.setItem(STORAGE_KEY_PREFIX + 'pairings', JSON.stringify(pairings));
+    } else {
+      localStorage.removeItem(STORAGE_KEY_PREFIX + 'pairings');
+    }
+  }, [pairings]);
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY_PREFIX + 'drawn_ids', JSON.stringify(drawnIds));
+  }, [drawnIds]);
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY_PREFIX + 'event_name', eventName);
+  }, [eventName]);
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY_PREFIX + 'budget_note', budgetNote);
+  }, [budgetNote]);
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY_PREFIX + 'organizer_pin', organizerPin);
+  }, [organizerPin]);
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY_PREFIX + 'updated_at', updatedAt.toString());
+    localUpdatedAtRef.current = updatedAt;
+  }, [updatedAt]);
+
   // 1. CENTRAL SERVER REAL-TIME SYNC
-  // Fetches live state from server and keeps all connected phones completely in sync!
+  // Fetches live state from server without clobbering newer local edits!
   const fetchServerState = async () => {
     try {
       const res = await fetch('/api/data', { cache: 'no-store' });
       if (res.ok) {
         const data = await res.json();
         if (data && data.participants) {
-          setParticipants(data.participants);
-          setExclusions(data.exclusions || {});
-          if (data.pairings) setPairings(data.pairings);
-          if (data.drawnIds) setDrawnIds(data.drawnIds);
-          if (data.eventName) setEventName(data.eventName);
-          if (data.budgetNote) setBudgetNote(data.budgetNote);
-          if (data.organizerPin) setOrganizerPin(data.organizerPin);
-          setIsServerSynced(true);
-
-          // Update local cache
-          localStorage.setItem(STORAGE_KEY_PREFIX + 'drawn_ids', JSON.stringify(data.drawnIds || []));
-          localStorage.setItem(STORAGE_KEY_PREFIX + 'participants', JSON.stringify(data.participants));
-          localStorage.setItem(STORAGE_KEY_PREFIX + 'pairings', JSON.stringify(data.pairings || {}));
+          // If server has a timestamp, only update if server is newer or equal!
+          const serverTime = data.updatedAt || 0;
+          if (serverTime >= localUpdatedAtRef.current) {
+            localUpdatedAtRef.current = serverTime;
+            setUpdatedAt(serverTime);
+            setParticipants(data.participants);
+            setExclusions(data.exclusions || {});
+            if (data.pairings) setPairings(data.pairings);
+            if (data.drawnIds) setDrawnIds(data.drawnIds);
+            if (data.eventName) setEventName(data.eventName);
+            if (data.budgetNote) setBudgetNote(data.budgetNote);
+            if (data.organizerPin) setOrganizerPin(data.organizerPin);
+            setIsServerSynced(true);
+          } else if (serverTime === 0 && localUpdatedAtRef.current === 0) {
+            // First time load with initial template
+            setParticipants(data.participants);
+            if (data.pairings) setPairings(data.pairings);
+            if (data.drawnIds) setDrawnIds(data.drawnIds);
+            setIsServerSynced(true);
+          }
         }
       }
     } catch (e) {
-      // Fallback to local storage if offline
+      // Local storage active as fallback
     }
   };
 
-  // Poll server every 2 seconds so that when Device A draws, Device B sees it immediately!
+  // Poll server every 2.5 seconds
   useEffect(() => {
     fetchServerState();
 
-    const interval = setInterval(fetchServerState, 2200);
+    const interval = setInterval(fetchServerState, 2500);
     const handleFocus = () => fetchServerState();
     window.addEventListener('focus', handleFocus);
 
@@ -97,32 +145,39 @@ export default function App() {
     };
   }, []);
 
-  // When organizer makes changes, broadcast to central server
+  // Broadcast state changes to server
   const syncToServer = async (payload) => {
+    const now = Date.now();
+    localUpdatedAtRef.current = now;
+    setUpdatedAt(now);
+
     try {
       await fetch('/api/sync', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        body: JSON.stringify({ ...payload, updatedAt: now })
       });
     } catch (e) {
       console.warn('Sync to server failed:', e);
     }
   };
 
-  // 2. WHEN SOMEONE DRAWS: Immediately record on central server
+  // When someone draws: record locally and broadcast to server
   const handleParticipantDraw = async (giverId) => {
     if (!drawnIds.includes(giverId)) {
       const updated = [...drawnIds, giverId];
       setDrawnIds(updated);
       localStorage.setItem(STORAGE_KEY_PREFIX + 'drawn_ids', JSON.stringify(updated));
 
-      // Post to central server so ALL other devices get it immediately
+      const now = Date.now();
+      localUpdatedAtRef.current = now;
+      setUpdatedAt(now);
+
       try {
         await fetch('/api/draw', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ giverId })
+          body: JSON.stringify({ giverId, updatedAt: now })
         });
       } catch (e) {
         console.warn('Draw sync error:', e);
@@ -130,7 +185,6 @@ export default function App() {
     }
   };
 
-  // Sync state to local storage and server on organizer edits
   const handleSetParticipants = (newVal) => {
     setParticipants(newVal);
     syncToServer({ participants: newVal });
@@ -159,40 +213,6 @@ export default function App() {
   const handleSetBudgetNote = (newVal) => {
     setBudgetNote(newVal);
     syncToServer({ budgetNote: newVal });
-  };
-
-  // 3. TRADITIONAL CHRISTMAS MUSIC AUTOPLAY
-  useEffect(() => {
-    // Attempt automatic playback immediately on mount
-    try {
-      audioManager.startMusic();
-      setIsMusicPlaying(true);
-    } catch (e) {
-      // Handled on first user gesture below
-    }
-
-    // Modern browsers require 1 user gesture to unmute: attach global listener
-    const startMusicOnFirstInteraction = () => {
-      if (!audioManager.isPlaying) {
-        audioManager.startMusic();
-        setIsMusicPlaying(true);
-      }
-    };
-
-    window.addEventListener('pointerdown', startMusicOnFirstInteraction, { once: true });
-    window.addEventListener('touchstart', startMusicOnFirstInteraction, { once: true });
-    window.addEventListener('click', startMusicOnFirstInteraction, { once: true });
-
-    return () => {
-      window.removeEventListener('pointerdown', startMusicOnFirstInteraction);
-      window.removeEventListener('touchstart', startMusicOnFirstInteraction);
-      window.removeEventListener('click', startMusicOnFirstInteraction);
-    };
-  }, []);
-
-  const handleToggleMusic = () => {
-    const active = audioManager.toggleMusic();
-    setIsMusicPlaying(active);
   };
 
   return (
@@ -232,8 +252,8 @@ export default function App() {
         </p>
       </footer>
 
-      {/* Traditional Christmas Carols Music Player */}
-      <MusicPlayer isPlaying={isMusicPlaying} onToggle={handleToggleMusic} />
+      {/* Sound Effects Toggle Only (No Background Music!) */}
+      <SoundEffectsToggle />
 
       {/* Organizer Modal */}
       <OrganizerModal

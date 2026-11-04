@@ -19,8 +19,9 @@ export default async function handler(req, res) {
   }
 
   const payload = req.body || {};
+  const updatedAt = payload.updatedAt || Date.now();
 
-  // 1. If Vercel KV is configured
+  // 1. If Vercel KV is configured (Cloud Database)
   if (KV_URL && KV_TOKEN) {
     try {
       const getRes = await fetch(`${KV_URL}/get/${STATE_KEY}`, {
@@ -32,7 +33,7 @@ export default async function handler(req, res) {
         state = typeof getData.result === 'string' ? JSON.parse(getData.result) : getData.result;
       }
 
-      const updated = { ...state, ...payload };
+      const updated = { ...state, ...payload, updatedAt };
 
       await fetch(`${KV_URL}/set/${STATE_KEY}`, {
         method: 'POST',
@@ -43,25 +44,30 @@ export default async function handler(req, res) {
         body: JSON.stringify(updated)
       });
 
-      return res.status(200).json({ success: true, state: updated });
+      return res.status(200).json({ success: true, state: updated, database: 'vercel-kv' });
     } catch (e) {
       console.error('KV sync error:', e);
       return res.status(500).json({ error: e.message });
     }
   }
 
-  // 2. Fallback to local file
+  // 2. Fallback to local file if running on a server/local machine
   try {
     const localFile = path.resolve(process.cwd(), 'bunutan_state.json');
     if (fs.existsSync(localFile)) {
       const current = JSON.parse(fs.readFileSync(localFile, 'utf-8'));
-      const updated = { ...current, ...payload };
+      const updated = { ...current, ...payload, updatedAt };
       fs.writeFileSync(localFile, JSON.stringify(updated, null, 2), 'utf-8');
-      return res.status(200).json({ success: true, state: updated });
+      return res.status(200).json({ success: true, state: updated, database: 'local-file' });
     }
   } catch (e) {
     console.error('Local file sync error:', e);
   }
 
-  return res.status(200).json({ success: true, state: payload });
+  // If on Vercel without KV connected yet
+  return res.status(200).json({ 
+    success: true, 
+    state: { ...payload, updatedAt }, 
+    warning: 'KV_NOT_CONNECTED' 
+  });
 }
