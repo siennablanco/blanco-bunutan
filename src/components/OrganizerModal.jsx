@@ -58,7 +58,7 @@ export default function OrganizerModal({
       setPinError('');
       audioManager.playJingleChime();
     } else {
-      setPinError('Maling PIN! Subukan muli.');
+      setPinError('Maling PIN! Try mo ulit.');
       audioManager.playPop();
     }
   };
@@ -72,7 +72,7 @@ export default function OrganizerModal({
     setParticipants(updated);
     setNewName('');
     setNewWishlist('');
-    setSuccessMessage(`Naidagdag si ${newName.trim()}!`);
+    setSuccessMessage(`Added na si ${newName.trim()}! 🎁`);
     setTimeout(() => setSuccessMessage(''), 3000);
     audioManager.playPop();
   };
@@ -91,14 +91,14 @@ export default function OrganizerModal({
     setParticipants([...participants, ...newEntries]);
     setBulkNames('');
     setShowBulkAdd(false);
-    setSuccessMessage(`Matagumpay na naidagdag ang ${newEntries.length} na kalahok!`);
+    setSuccessMessage(`Swabe! Na-add ang ${newEntries.length} na participants! 🎉`);
     setTimeout(() => setSuccessMessage(''), 3000);
     audioManager.playJingleChime();
   };
 
   const handleDeleteParticipant = (id) => {
     const p = participants.find(x => x.id === id);
-    if (!window.confirm(`Sigurado ka bang tanggalin si ${p?.name}?`)) return;
+    if (!window.confirm(`Sure ka bang tatanggalin si ${p?.name}?`)) return;
 
     setParticipants(participants.filter(x => x.id !== id));
     // Remove from exclusions
@@ -113,7 +113,7 @@ export default function OrganizerModal({
     if (pairings && (pairings[id] || Object.values(pairings).includes(id))) {
       setPairings(null);
       setDrawnIds([]);
-      setErrorMessage('Tinanggal ang kalahok kaya na-reset ang lumang bunutan pairings.');
+      setErrorMessage('May tinanggal na tao kaya na-reset ang pairings. Paki-reshuffle!');
     }
     audioManager.playPop();
   };
@@ -137,7 +137,7 @@ export default function OrganizerModal({
   // Quick Mag-asawa / Couple mutual exclusion helper
   const handleAddCoupleExclusion = () => {
     if (!couplePersonA || !couplePersonB || couplePersonA === couplePersonB) {
-      alert('Pumili ng 2 magkaibang tao para sa mag-asawa exclusion.');
+      alert('Pumili ng 2 magkaibang tao para sa couple exclusion.');
       return;
     }
 
@@ -161,7 +161,7 @@ export default function OrganizerModal({
   // Generate / Shuffle pairings
   const handleGeneratePairings = () => {
     if (participants.length < 2) {
-      setErrorMessage('Kailangan ng hindi bababa sa 2 kalahok para makapag-bunutan!');
+      setErrorMessage('Kailangan at least 2 participants para makapag-bunutan!');
       return;
     }
 
@@ -169,22 +169,22 @@ export default function OrganizerModal({
     const solution = generateValidPairings(participants, exclusions);
 
     if (!solution) {
-      setErrorMessage('❌ Hindi makabuo ng bunutan dahil sa sobrang daming exclusions! Subukang bawasan ang bawal mabunot.');
+      setErrorMessage('❌ Walang valid solution dahil sa sobrang exclusions! Paki-bawas.');
       return;
     }
 
     setPairings(solution);
     setDrawnIds([]);
-    setSuccessMessage('🎉 Matagumpay na nabuo ang bagong Secret Santa Bunutan pool!');
+    setSuccessMessage('🎉 Fresh batch! Na-shuffle na ang bunutan pairings!');
     setTimeout(() => setSuccessMessage(''), 3500);
     audioManager.playFanfare();
   };
 
   // Reset all draws
   const handleResetDrawsOnly = () => {
-    if (window.confirm('I-re-reset ba ang status ng mga nakabunot na? (Mananatili ang kasalukuyang pairings para makapag-test muli)')) {
+    if (window.confirm('I-re-reset ba ang status ng mga nakabunot na? (Mananatili ang pairings para makapag-test muli)')) {
       setDrawnIds([]);
-      setSuccessMessage('🎉 Na-reset na ang mga nakabunot! Pwede nang bumunot muli ang lahat.');
+      setSuccessMessage('🎉 Na-reset na ang draws! Pwede nang bumunot ulit lahat.');
       setTimeout(() => setSuccessMessage(''), 3500);
       audioManager.playPop();
     }
@@ -192,7 +192,7 @@ export default function OrganizerModal({
 
   // Reset all draws and reshuffle pairings
   const handleResetAllAndReshuffle = () => {
-    if (window.confirm('I-re-reset ba ang bunutan at mag-shuffle ng bagong pairings para sa lahat?')) {
+    if (window.confirm('I-re-reset ang lahat at mag-shuffle ng completely new pairings?')) {
       handleGeneratePairings();
     }
   };
@@ -239,7 +239,7 @@ export default function OrganizerModal({
                 Organizer Dashboard
               </h2>
               <p className="text-xs text-red-100 font-medium">
-                Pamahalaan ang mga Kalahok, Exclusions, at Bunutan
+                Manage Participants, Exclusions, at Bunutan
               </p>
             </div>
           </div>
@@ -271,10 +271,10 @@ export default function OrganizerModal({
               <KeyRound className="w-8 h-8" />
             </div>
             <h3 className="text-xl font-bold text-slate-800">
-              Organizer Passcode Required 🔒
+              Organizer Passcode 🔒
             </h3>
             <p className="text-sm text-slate-600 max-w-sm">
-              Ipasok ang Organizer PIN upang pamahalaan ang listahan at maiwasan ang pagsilip ng iba.
+              Enter ang PIN para ma-access ang controls at master list.
               <span className="block text-xs text-slate-400 mt-1">(Default PIN: 1234)</span>
             </p>
 
@@ -296,7 +296,7 @@ export default function OrganizerModal({
                 type="submit"
                 className="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-2xl shadow-lg transition-transform active:scale-95"
               >
-                Buksan ang Dashboard 🔓
+                Unlock Dashboard 🔓
               </button>
             </form>
           </div>
@@ -313,7 +313,7 @@ export default function OrganizerModal({
                 }`}
               >
                 <UserPlus className="w-4 h-4" />
-                Mga Kalahok ({participants.length})
+                Participants ({participants.length})
               </button>
               <button
                 onClick={() => setActiveTab('exclusions')}
@@ -374,7 +374,7 @@ export default function OrganizerModal({
                   <form onSubmit={handleAddParticipant} className="bg-red-50/70 p-3.5 rounded-2xl border border-red-200 space-y-2.5">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-bold text-red-800 uppercase tracking-wider flex items-center gap-1">
-                        <Plus className="w-3.5 h-3.5" /> Magdagdag ng Kalahok
+                        <Plus className="w-3.5 h-3.5" /> Mag-add ng Participant
                       </span>
                       <button
                         type="button"
@@ -382,7 +382,7 @@ export default function OrganizerModal({
                         className="text-xs font-semibold text-red-700 hover:underline flex items-center gap-1"
                       >
                         <List className="w-3.5 h-3.5" />
-                        {showBulkAdd ? "Isahang Dagdag" : "Maramihang Dagdag (Bulk Add)"}
+                        {showBulkAdd ? "Isahang Dagdag" : "Bulk Add (Maramihan)"}
                       </button>
                     </div>
 
@@ -414,7 +414,7 @@ export default function OrganizerModal({
                     ) : (
                       <div className="space-y-2">
                         <p className="text-xs text-slate-600">
-                          Mag-paste ng mga pangalan na pinaghihiwalay ng comma (,) o bawat linya:
+                          Mag-paste ng mga pangalan (separated by comma o bawat line):
                         </p>
                         <textarea
                           rows={4}
@@ -446,13 +446,13 @@ export default function OrganizerModal({
                   {/* Participants List */}
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-xs text-slate-500 font-semibold px-1">
-                      <span>Pangalan at Wishlist (Naka-Alphabetical A–Z 🔤)</span>
+                      <span>Pangalan at Wishlist (A–Z 🔤)</span>
                       <span>Aksyon</span>
                     </div>
 
                     {sortedParticipants.length === 0 ? (
                       <div className="p-8 text-center text-slate-400 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200">
-                        Walang kalahok pa. Mag-add ng mga pangalan sa itaas! 🎄
+                        Wala pang participants. Mag-add sa itaas! 🎄
                       </div>
                     ) : (
                       <div className="divide-y divide-slate-100 max-h-64 overflow-y-auto pr-1">
@@ -510,7 +510,7 @@ export default function OrganizerModal({
                       Quick Setup: Mag-asawa / Mag-partner (Bawal Magkabunutan)
                     </div>
                     <p className="text-xs text-slate-600">
-                      Piliin ang dalawang mag-partner upang hindi nila mabunot ang isa't isa nang sabay:
+                      Piliin ang dalawang mag-partner para hindi nila mabunot ang isa't isa:
                     </p>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                       <select
@@ -538,7 +538,7 @@ export default function OrganizerModal({
                         onClick={handleAddCoupleExclusion}
                         className="px-3 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl text-xs shadow-md transition-transform active:scale-95"
                       >
-                        I-set Bawal Magkabunutan 🚫
+                        I-set: Bawal Magkabunutan 🚫
                       </button>
                     </div>
                   </div>
@@ -547,7 +547,7 @@ export default function OrganizerModal({
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <label className="text-xs font-bold text-slate-700">
-                        Pumili ng kalahok para i-customize ang bawal niyang mabunot:
+                        Piliin kung sino ang i-aadjust ang exclusions:
                       </label>
                     </div>
 
@@ -613,12 +613,12 @@ export default function OrganizerModal({
                   <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 flex items-center justify-between">
                     <div>
                       <h4 className="text-sm font-bold text-emerald-900">
-                        Kasalukuyang Katayuan ng Bunutan
+                        Kasalukuyang Status ng Bunutan
                       </h4>
                       <p className="text-xs text-emerald-700 mt-0.5">
                         {pairings 
                           ? `${drawnIds.length} sa ${participants.length} kalahok ang nakabunot na`
-                          : 'Hindi pa nakapag-shuffle o nakapag-generate ng bunutan pool.'}
+                          : 'Wala pang pairing pool. I-click ang shuffle sa kanan!'}
                       </p>
                     </div>
 
@@ -628,7 +628,7 @@ export default function OrganizerModal({
                         className="px-3.5 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-md transition-transform active:scale-95"
                       >
                         <Shuffle className="w-3.5 h-3.5" />
-                        {pairings ? "I-shuffle Ulit" : "Bumuo ng Bunutan 🎁"}
+                        {pairings ? "Reshuffle Pairings 🎲" : "Bumuo ng Bunutan 🎁"}
                       </button>
                     </div>
                   </div>
@@ -648,7 +648,7 @@ export default function OrganizerModal({
                     </div>
 
                     <p className="text-xs text-amber-900">
-                      Gusto mo bang subukan muna ang bunutan? Pagkatapos mong mag-test, gamitin ang alinman sa mga buttons sa ibaba para i-reset ang lahat bago ibigay sa pamilya:
+                      Gusto mo bang mag-test muna bago ipasa sa pamilya? Gamitin ang buttons sa baba para i-reset:
                     </p>
 
                     <div className="flex flex-col sm:flex-row gap-2 pt-1">
@@ -658,7 +658,7 @@ export default function OrganizerModal({
                         className="flex-1 py-2.5 px-3.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs rounded-xl flex items-center justify-center gap-1.5 shadow-sm transition-transform active:scale-95 border border-amber-600/30"
                       >
                         <RotateCcw className="w-4 h-4 text-slate-950" />
-                        I-reset ang mga Nakabunot ({drawnIds.length})
+                        Reset Draws Lang ({drawnIds.length})
                       </button>
 
                       <button
@@ -667,7 +667,7 @@ export default function OrganizerModal({
                         className="flex-1 py-2.5 px-3.5 bg-red-600 hover:bg-red-700 text-white font-extrabold text-xs rounded-xl flex items-center justify-center gap-1.5 shadow-sm transition-transform active:scale-95"
                       >
                         <Shuffle className="w-4 h-4" />
-                        I-reset at Mag-shuffle ng Bago 🎲
+                        Reset All & Reshuffle 🎲
                       </button>
                     </div>
                   </div>
@@ -697,7 +697,7 @@ export default function OrganizerModal({
                           onClick={handleResetDrawsOnly}
                           className="text-amber-700 hover:underline flex items-center gap-1"
                         >
-                          <RefreshCw className="w-3 h-3" /> I-reset ang Draws
+                          <RefreshCw className="w-3 h-3" /> Reset Draws
                         </button>
                       )}
                     </div>
@@ -736,7 +736,7 @@ export default function OrganizerModal({
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
                           <Shield className="w-4 h-4 text-red-600" />
-                          Master List ng Lahat ng Pairings (Para sa Organizer lamang)
+                          Secret Master List (Organizer eyes only!)
                         </span>
                         <div className="flex gap-2">
                           <button
@@ -745,7 +745,7 @@ export default function OrganizerModal({
                             className="px-2.5 py-1 text-xs font-semibold bg-white border border-slate-200 rounded-lg hover:bg-slate-100 flex items-center gap-1"
                           >
                             {showMasterList ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-                            {showMasterList ? "Itago" : "Ipakita"}
+                            {showMasterList ? "Itago" : "Silipin"}
                           </button>
                           {showMasterList && (
                             <button
@@ -754,7 +754,7 @@ export default function OrganizerModal({
                               className="px-2.5 py-1 text-xs font-semibold bg-slate-800 text-white rounded-lg hover:bg-black flex items-center gap-1 shadow-sm"
                             >
                               {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                              {copied ? "Nakopya na!" : "Kopyahin"}
+                              {copied ? "Copied!" : "Copy List"}
                             </button>
                           )}
                         </div>
@@ -776,7 +776,7 @@ export default function OrganizerModal({
                         </div>
                       ) : (
                         <p className="text-[11px] text-slate-500 italic">
-                          Nakatago ang master list upang hindi masira ang sorpresa. I-click ang "Ipakita" kung kailangang tingnan para sa emergency backup.
+                          Nakatago ang master list para iwas spoiler. I-click ang "Silipin" kung may makalimot sa nabunot nila.
                         </p>
                       )}
                     </div>
@@ -789,24 +789,24 @@ export default function OrganizerModal({
                 <div className="space-y-4">
                   {/* Event Name */}
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-slate-700">Pangalan ng Okasyon o Pamilya</label>
+                    <label className="text-xs font-bold text-slate-700">Pangalan ng Event o Pamilya</label>
                     <input
                       type="text"
                       value={eventName}
                       onChange={(e) => setEventName(e.target.value)}
-                      placeholder="Hal. Dela Cruz Family Christmas Bunutan 2026 🎄"
+                      placeholder="Hal. Blanco Christmas Party 2026 🎄"
                       className="w-full px-3.5 py-2.5 rounded-xl border-2 border-slate-300 text-sm focus:border-red-500 focus:outline-none text-slate-900 bg-white placeholder:text-slate-400 font-medium"
                     />
                   </div>
 
                   {/* Budget Note / Theme */}
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-slate-700">Panuntunan sa Regalo o Budget</label>
+                    <label className="text-xs font-bold text-slate-700">Budget Rule o Note</label>
                     <input
                       type="text"
                       value={budgetNote}
                       onChange={(e) => setBudgetNote(e.target.value)}
-                      placeholder="Hal. Budget: 300 petot (Bawal ang bimpo at picture frame!) 🎁"
+                      placeholder="Hal. Budget: 300 petot! (Bawal bimpo at photo album!) 🎁"
                       className="w-full px-3.5 py-2.5 rounded-xl border-2 border-slate-300 text-sm focus:border-red-500 focus:outline-none text-slate-900 bg-white placeholder:text-slate-400 font-medium"
                     />
                   </div>
@@ -814,10 +814,10 @@ export default function OrganizerModal({
                   {/* Cloud DB Info */}
                   <div className="pt-2 border-t border-slate-200 space-y-1.5 bg-slate-50 p-3 rounded-2xl text-xs text-slate-600">
                     <span className="font-bold text-slate-800 flex items-center gap-1">
-                      ☁️ Paalala sa Pag-save sa Vercel:
+                      ☁️ Cloud Sync Status:
                     </span>
                     <p className="text-[11px] text-slate-500">
-                      Naka-save ito agad sa iyong browser. Para mai-save sa Cloud sa Vercel upang makita ng lahat ng kamag-anak sa ibang cellphone, i-click lamang ang <strong>Storage ➔ KV</strong> sa Vercel dashboard.
+                      Real-time synced sa Upstash Redis. Live na makikita sa lahat ng devices ng pamilya kapag may nag-draw o nag-edit!
                     </p>
                   </div>
                   <div className="pt-2 border-t border-slate-200 space-y-2">
@@ -838,11 +838,11 @@ export default function OrganizerModal({
                         type="submit"
                         className="px-4 py-2 bg-slate-800 text-white rounded-xl text-xs font-bold hover:bg-black"
                       >
-                        I-save ang PIN
+                        Save PIN
                       </button>
                     </form>
                     <p className="text-[11px] text-slate-400">
-                      Kasalukuyang PIN: <span className="font-mono font-bold text-slate-600">{organizerPin}</span>
+                      Current PIN: <span className="font-mono font-bold text-slate-600">{organizerPin}</span>
                     </p>
                   </div>
                 </div>
@@ -853,13 +853,13 @@ export default function OrganizerModal({
             {/* Footer */}
             <div className="p-3 sm:p-4 bg-slate-50 border-t border-slate-200 flex justify-between items-center text-xs">
               <span className="text-slate-500">
-                Ligtas na naka-save sa iyong browser 💾
+                Ligtas na naka-save sa browser at cloud 💾
               </span>
               <button
                 onClick={onClose}
                 className="px-5 py-2 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white font-bold rounded-xl shadow-md transition-transform active:scale-95"
               >
-                Tapos Na / Isara
+                Done / Isara
               </button>
             </div>
           </>
