@@ -1,8 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 
-const KV_URL = process.env.KV_REST_API_URL;
-const KV_TOKEN = process.env.KV_REST_API_TOKEN;
+const KV_URL = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
+const KV_TOKEN = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
 const STATE_KEY = 'blanco_bunutan_state_2026';
 
 export default async function handler(req, res) {
@@ -15,7 +15,7 @@ export default async function handler(req, res) {
     return res.status(204).end();
   }
 
-  // 1. If Vercel KV is configured
+  // 1. Check Upstash / Vercel KV
   if (KV_URL && KV_TOKEN) {
     try {
       const response = await fetch(`${KV_URL}/get/${STATE_KEY}`, {
@@ -27,11 +27,11 @@ export default async function handler(req, res) {
         return res.status(200).json(parsed);
       }
     } catch (e) {
-      console.error('KV fetch error:', e);
+      console.error('Upstash fetch error:', e);
     }
   }
 
-  // 2. Fallback to local file if available
+  // 2. Fallback to local file
   try {
     const localFile = path.resolve(process.cwd(), 'bunutan_state.json');
     if (fs.existsSync(localFile)) {
@@ -44,4 +44,3 @@ export default async function handler(req, res) {
 
   return res.status(200).json({});
 }
-

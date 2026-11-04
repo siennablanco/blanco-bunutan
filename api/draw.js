@@ -1,8 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 
-const KV_URL = process.env.KV_REST_API_URL;
-const KV_TOKEN = process.env.KV_REST_API_TOKEN;
+const KV_URL = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
+const KV_TOKEN = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
 const STATE_KEY = 'blanco_bunutan_state_2026';
 
 export default async function handler(req, res) {
@@ -23,7 +23,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Missing giverId' });
   }
 
-  // 1. If Vercel KV is configured
+  // 1. If Upstash / Vercel KV is configured
   if (KV_URL && KV_TOKEN) {
     try {
       const getRes = await fetch(`${KV_URL}/get/${STATE_KEY}`, {
@@ -41,19 +41,20 @@ export default async function handler(req, res) {
         state.drawnIds = drawnIds;
         state.updatedAt = updatedAt;
         
-        await fetch(`${KV_URL}/set/${STATE_KEY}`, {
+        // Save using standard Upstash command
+        await fetch(`${KV_URL}`, {
           method: 'POST',
           headers: { 
             Authorization: `Bearer ${KV_TOKEN}`,
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify(state)
+          body: JSON.stringify(['SET', STATE_KEY, JSON.stringify(state)])
         });
       }
 
       return res.status(200).json({ success: true, drawnIds: state.drawnIds });
     } catch (e) {
-      console.error('KV draw error:', e);
+      console.error('Upstash draw error:', e);
       return res.status(500).json({ error: e.message });
     }
   }

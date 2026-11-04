@@ -1,8 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 
-const KV_URL = process.env.KV_REST_API_URL;
-const KV_TOKEN = process.env.KV_REST_API_TOKEN;
+const KV_URL = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
+const KV_TOKEN = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
 const STATE_KEY = 'blanco_bunutan_state_2026';
 
 export default async function handler(req, res) {
@@ -21,7 +21,7 @@ export default async function handler(req, res) {
   const payload = req.body || {};
   const updatedAt = payload.updatedAt || Date.now();
 
-  // 1. If Vercel KV is configured (Cloud Database)
+  // 1. If Upstash / Vercel KV is configured (Cloud Database)
   if (KV_URL && KV_TOKEN) {
     try {
       const getRes = await fetch(`${KV_URL}/get/${STATE_KEY}`, {
@@ -35,18 +35,19 @@ export default async function handler(req, res) {
 
       const updated = { ...state, ...payload, updatedAt };
 
-      await fetch(`${KV_URL}/set/${STATE_KEY}`, {
+      // Standard Upstash REST command
+      await fetch(`${KV_URL}`, {
         method: 'POST',
         headers: { 
           Authorization: `Bearer ${KV_TOKEN}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(updated)
+        body: JSON.stringify(['SET', STATE_KEY, JSON.stringify(updated)])
       });
 
-      return res.status(200).json({ success: true, state: updated, database: 'vercel-kv' });
+      return res.status(200).json({ success: true, state: updated, database: 'upstash' });
     } catch (e) {
-      console.error('KV sync error:', e);
+      console.error('Upstash sync error:', e);
       return res.status(500).json({ error: e.message });
     }
   }
@@ -64,10 +65,9 @@ export default async function handler(req, res) {
     console.error('Local file sync error:', e);
   }
 
-  // If on Vercel without KV connected yet
   return res.status(200).json({ 
     success: true, 
     state: { ...payload, updatedAt }, 
-    warning: 'KV_NOT_CONNECTED' 
+    warning: 'UPSTASH_NOT_CONNECTED' 
   });
 }
