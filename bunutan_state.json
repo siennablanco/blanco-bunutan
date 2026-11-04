@@ -1,0 +1,69 @@
+{
+  "eventName": "Blanco Christmas Party 2026 🎄",
+  "budgetNote": "Budget: 300 petot! (Bawal ang bimpo, baso ng Nescafe, at picture frame!) 🎁💸",
+  "organizerPin": "1234",
+  "participants": [
+    {
+      "id": "b1",
+      "name": "Tito Boyet Blanco",
+      "wishlist": "Kahit ano huwag lang bimpo at medyas haha!"
+    },
+    {
+      "id": "b2",
+      "name": "Tita Susan Blanco",
+      "wishlist": "Tupperware o kahit anong pampaluto sa kusina"
+    },
+    {
+      "id": "b3",
+      "name": "Kuya Jayson Blanco",
+      "wishlist": "Gaming mouse o pambili ng t-shirt 😂"
+    },
+    {
+      "id": "b4",
+      "name": "Ate Bea Blanco",
+      "wishlist": "Scented candle o skincare kit"
+    },
+    {
+      "id": "b5",
+      "name": "Bunso Enzo Blanco",
+      "wishlist": "Wireless earphone o pambili ng skin sa ML 🎮"
+    },
+    {
+      "id": "b6",
+      "name": "Lolo Carding Blanco",
+      "wishlist": "Pampahid sa likod (Katinko/Salonpas VIP pack) o polo shirt"
+    },
+    {
+      "id": "b7",
+      "name": "Lola Remedios Blanco",
+      "wishlist": "Mainit na shawl o paboritong imported chocolates 🍫"
+    }
+  ],
+  "exclusions": {
+    "b1": [
+      "b2"
+    ],
+    "b2": [
+      "b1"
+    ],
+    "b6": [
+      "b7"
+    ],
+    "b7": [
+      "b6"
+    ]
+  },
+  "pairings": {
+    "b1": "b3",
+    "b2": "b4",
+    "b3": "b5",
+    "b4": "b6",
+    "b5": "b7",
+    "b6": "b1",
+    "b7": "b2"
+  },
+  "drawnIds": [
+    "b1",
+    "b6"
+  ]
+}
