@@ -25,10 +25,12 @@ export default function DrawScreen({
   const selectedGiver = participants.find(p => p.id === selectedGiverId);
   const hasAlreadyDrawn = selectedGiverId && drawnIds.includes(selectedGiverId);
 
-  // Filtered participants list
-  const filteredParticipants = participants.filter(p => 
-    p.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Filtered & Alphabetically Sorted participants list (A to Z)
+  const filteredParticipants = [...participants]
+    .sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }))
+    .filter(p => 
+      p.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
   const remainingToDraw = participants.filter(p => !drawnIds.includes(p.id)).length;
 
@@ -342,13 +344,13 @@ export default function DrawScreen({
             {/* Instruction title */}
             <div className="text-center space-y-1">
               <span className="text-xs font-bold text-red-600 uppercase tracking-wider flex items-center justify-center gap-1.5">
-                <Gift className="w-4 h-4" /> Unang Hakbang
+                <Gift className="w-4 h-4" /> Unang Hakbang (Naka-Alphabetical A–Z 🔤)
               </span>
               <h2 className="text-2xl font-bold text-slate-800">
                 Piliin ang Pangalan Mo sa Listahan 👇
               </h2>
               <p className="text-xs text-slate-500 font-medium">
-                Piliin ang sarili mo. Bawal magpanggap na si bunso para makabunot ulit! 😂
+                Naka-ayos mula A hanggang Z para madali mong mahanap ang pangalan mo!
               </p>
             </div>
 

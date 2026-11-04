@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { 
   X, Plus, Trash2, Shield, Shuffle, RefreshCw, Eye, EyeOff, 
   Copy, Check, AlertCircle, HeartHandshake, UserPlus, Gift, List, 
-  Settings, KeyRound
+  Settings, KeyRound, RotateCcw
 } from 'lucide-react';
 import { generateValidPairings } from '../utils/secretSanta';
 import { audioManager } from '../utils/audio';
@@ -37,6 +37,11 @@ export default function OrganizerModal({
   const [copied, setCopied] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+
+  // Alphabetically sorted participants (A to Z)
+  const sortedParticipants = [...participants].sort((a, b) => 
+    a.name.localeCompare(b.name, undefined, { sensitivity: 'base' })
+  );
 
   // Pin authentication state
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -177,11 +182,18 @@ export default function OrganizerModal({
 
   // Reset all draws
   const handleResetDrawsOnly = () => {
-    if (window.confirm('I-re-reset ba ang status ng mga nakabunot na? (Mananatili ang kasalukuyang pairings)')) {
+    if (window.confirm('I-re-reset ba ang status ng mga nakabunot na? (Mananatili ang kasalukuyang pairings para makapag-test muli)')) {
       setDrawnIds([]);
-      setSuccessMessage('Na-reset ang drawn status! Pwede nang bumunot muli ang lahat.');
-      setTimeout(() => setSuccessMessage(''), 3000);
+      setSuccessMessage('🎉 Na-reset na ang mga nakabunot! Pwede nang bumunot muli ang lahat.');
+      setTimeout(() => setSuccessMessage(''), 3500);
       audioManager.playPop();
+    }
+  };
+
+  // Reset all draws and reshuffle pairings
+  const handleResetAllAndReshuffle = () => {
+    if (window.confirm('I-re-reset ba ang bunutan at mag-shuffle ng bagong pairings para sa lahat?')) {
+      handleGeneratePairings();
     }
   };
 
@@ -231,12 +243,25 @@ export default function OrganizerModal({
               </p>
             </div>
           </div>
-          <button
-            onClick={onClose}
-            className="w-9 h-9 rounded-full bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-transform active:scale-90"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            {drawnIds.length > 0 && (
+              <button
+                type="button"
+                onClick={handleResetDrawsOnly}
+                className="px-3 py-1.5 bg-amber-400 hover:bg-amber-300 text-slate-950 font-extrabold text-xs rounded-xl flex items-center gap-1.5 shadow transition-transform active:scale-95 border border-yellow-200"
+                title="I-reset ang mga nakabunot para makapag-test muli"
+              >
+                <RotateCcw className="w-3.5 h-3.5 text-amber-900" />
+                <span>Reset Draws ({drawnIds.length})</span>
+              </button>
+            )}
+            <button
+              onClick={onClose}
+              className="w-9 h-9 rounded-full bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-transform active:scale-90"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         {/* PIN Screen if not authenticated */}
@@ -421,17 +446,17 @@ export default function OrganizerModal({
                   {/* Participants List */}
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-xs text-slate-500 font-semibold px-1">
-                      <span>Pangalan at Wishlist</span>
+                      <span>Pangalan at Wishlist (Naka-Alphabetical A–Z 🔤)</span>
                       <span>Aksyon</span>
                     </div>
 
-                    {participants.length === 0 ? (
+                    {sortedParticipants.length === 0 ? (
                       <div className="p-8 text-center text-slate-400 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200">
                         Walang kalahok pa. Mag-add ng mga pangalan sa itaas! 🎄
                       </div>
                     ) : (
                       <div className="divide-y divide-slate-100 max-h-64 overflow-y-auto pr-1">
-                        {participants.map((p, idx) => {
+                        {sortedParticipants.map((p, idx) => {
                           const excludedCount = (exclusions[p.id] || []).length;
                           return (
                             <div key={p.id} className="py-2.5 flex items-center justify-between hover:bg-slate-50 px-2 rounded-xl transition-colors">
@@ -494,7 +519,7 @@ export default function OrganizerModal({
                         className="p-2 text-xs rounded-xl border border-rose-200 bg-white font-medium"
                       >
                         <option value="">Piliin ang Partner 1</option>
-                        {participants.map(p => (
+                        {sortedParticipants.map(p => (
                           <option key={p.id} value={p.id}>{p.name}</option>
                         ))}
                       </select>
@@ -504,7 +529,7 @@ export default function OrganizerModal({
                         className="p-2 text-xs rounded-xl border border-rose-200 bg-white font-medium"
                       >
                         <option value="">Piliin ang Partner 2</option>
-                        {participants.filter(p => p.id !== couplePersonA).map(p => (
+                        {sortedParticipants.filter(p => p.id !== couplePersonA).map(p => (
                           <option key={p.id} value={p.id}>{p.name}</option>
                         ))}
                       </select>
@@ -531,7 +556,7 @@ export default function OrganizerModal({
                       onChange={(e) => setSelectedGiverForExclusion(e.target.value)}
                       className="w-full p-2.5 text-sm font-bold text-red-700 bg-red-50/50 rounded-xl border border-red-200 focus:outline-none"
                     >
-                      {participants.map(p => (
+                      {sortedParticipants.map(p => (
                         <option key={p.id} value={p.id}>
                           {p.name} (Bawal mabunot: {(exclusions[p.id] || []).length} tao)
                         </option>
@@ -548,7 +573,7 @@ export default function OrganizerModal({
                         </p>
 
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-1 max-h-48 overflow-y-auto">
-                          {participants
+                          {sortedParticipants
                             .filter(p => p.id !== selectedGiverForExclusion)
                             .map(target => {
                               const isExcluded = (exclusions[selectedGiverForExclusion] || []).includes(target.id);
@@ -608,6 +633,45 @@ export default function OrganizerModal({
                     </div>
                   </div>
 
+                  {/* DEDICATED ORGANIZER RESET CENTER (PANG-TEST AT RESTART) */}
+                  <div className="bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-300 rounded-2xl p-4 space-y-3">
+                    <div className="flex items-center justify-between flex-wrap gap-2">
+                      <div className="flex items-center gap-2">
+                        <RotateCcw className="w-5 h-5 text-amber-700" />
+                        <h4 className="text-sm font-extrabold text-amber-950">
+                          Organizer Reset Center (Pang-Test Mode) 🔄
+                        </h4>
+                      </div>
+                      <span className="text-[10px] bg-amber-200 text-amber-900 px-2 py-0.5 rounded-full font-bold">
+                        Organizer Only 👑
+                      </span>
+                    </div>
+
+                    <p className="text-xs text-amber-900">
+                      Gusto mo bang subukan muna ang bunutan? Pagkatapos mong mag-test, gamitin ang alinman sa mga buttons sa ibaba para i-reset ang lahat bago ibigay sa pamilya:
+                    </p>
+
+                    <div className="flex flex-col sm:flex-row gap-2 pt-1">
+                      <button
+                        type="button"
+                        onClick={handleResetDrawsOnly}
+                        className="flex-1 py-2.5 px-3.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs rounded-xl flex items-center justify-center gap-1.5 shadow-sm transition-transform active:scale-95 border border-amber-600/30"
+                      >
+                        <RotateCcw className="w-4 h-4 text-slate-950" />
+                        I-reset ang mga Nakabunot ({drawnIds.length})
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={handleResetAllAndReshuffle}
+                        className="flex-1 py-2.5 px-3.5 bg-red-600 hover:bg-red-700 text-white font-extrabold text-xs rounded-xl flex items-center justify-center gap-1.5 shadow-sm transition-transform active:scale-95"
+                      >
+                        <Shuffle className="w-4 h-4" />
+                        I-reset at Mag-shuffle ng Bago 🎲
+                      </button>
+                    </div>
+                  </div>
+
                   {/* Draw Progress Bar */}
                   {pairings && (
                     <div className="space-y-1.5">
@@ -639,7 +703,7 @@ export default function OrganizerModal({
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-56 overflow-y-auto">
-                      {participants.map(p => {
+                      {sortedParticipants.map(p => {
                         const hasDrawn = drawnIds.includes(p.id);
                         return (
                           <div
@@ -698,7 +762,7 @@ export default function OrganizerModal({
 
                       {showMasterList ? (
                         <div className="p-3 bg-white rounded-xl border border-slate-200 divide-y divide-slate-100 text-xs">
-                          {participants.map(p => {
+                          {sortedParticipants.map(p => {
                             const receiverId = pairings[p.id];
                             const receiver = participants.find(x => x.id === receiverId);
                             return (
