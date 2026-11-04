@@ -361,7 +361,7 @@ export default function DrawScreen({
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   placeholder="Hanapin ang pangalan mo dito..."
-                  className="w-full pl-9 pr-4 py-2 text-xs rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-red-400 focus:outline-none font-medium"
+                  className="w-full pl-9 pr-4 py-2.5 text-xs rounded-xl border-2 border-slate-300 bg-white focus:border-red-400 focus:outline-none font-semibold text-slate-900 placeholder:text-slate-400"
                 />
               </div>
             )}

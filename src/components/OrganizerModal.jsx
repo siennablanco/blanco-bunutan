@@ -261,7 +261,7 @@ export default function OrganizerModal({
                 value={enteredPin}
                 onChange={(e) => setEnteredPin(e.target.value)}
                 placeholder="Ilagay ang PIN"
-                className="w-full text-center text-2xl font-bold tracking-widest px-4 py-3 rounded-2xl border-2 border-slate-300 focus:border-red-500 focus:outline-none"
+                className="w-full text-center text-2xl font-bold tracking-widest px-4 py-3 rounded-2xl border-2 border-slate-300 focus:border-red-500 focus:outline-none text-slate-900 bg-white placeholder:text-slate-400"
                 autoFocus
               />
               {pinError && (
@@ -368,7 +368,7 @@ export default function OrganizerModal({
                           value={newName}
                           onChange={(e) => setNewName(e.target.value)}
                           placeholder="Pangalan (hal. Tita Susan)"
-                          className="px-3.5 py-2 rounded-xl border border-slate-300 text-sm focus:border-red-500 focus:outline-none"
+                          className="px-3.5 py-2.5 rounded-xl border-2 border-slate-300 text-sm focus:border-red-500 focus:outline-none text-slate-900 bg-white placeholder:text-slate-400 font-medium"
                         />
                         <div className="flex gap-2">
                           <input
@@ -376,7 +376,7 @@ export default function OrganizerModal({
                             value={newWishlist}
                             onChange={(e) => setNewWishlist(e.target.value)}
                             placeholder="Wishlist / Hint (optional)"
-                            className="flex-1 px-3.5 py-2 rounded-xl border border-slate-300 text-sm focus:border-red-500 focus:outline-none"
+                            className="flex-1 px-3.5 py-2.5 rounded-xl border-2 border-slate-300 text-sm focus:border-red-500 focus:outline-none text-slate-900 bg-white placeholder:text-slate-400 font-medium"
                           />
                           <button
                             type="submit"
@@ -392,11 +392,11 @@ export default function OrganizerModal({
                           Mag-paste ng mga pangalan na pinaghihiwalay ng comma (,) o bawat linya:
                         </p>
                         <textarea
-                          rows={3}
+                          rows={4}
                           value={bulkNames}
                           onChange={(e) => setBulkNames(e.target.value)}
                           placeholder="Papa Bong, Mama Lita, Kuya Mark, Ate Sarah, Bunso..."
-                          className="w-full p-2.5 text-xs rounded-xl border border-slate-300 focus:border-red-500 focus:outline-none"
+                          className="w-full p-3 text-sm font-semibold rounded-xl border-2 border-slate-300 focus:border-red-500 focus:outline-none text-slate-900 bg-white placeholder:text-slate-400 shadow-inner leading-relaxed"
                         />
                         <div className="flex justify-end gap-2">
                           <button
@@ -731,7 +731,7 @@ export default function OrganizerModal({
                       value={eventName}
                       onChange={(e) => setEventName(e.target.value)}
                       placeholder="Hal. Dela Cruz Family Christmas Bunutan 2026 🎄"
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:border-red-500 focus:outline-none"
+                      className="w-full px-3.5 py-2.5 rounded-xl border-2 border-slate-300 text-sm focus:border-red-500 focus:outline-none text-slate-900 bg-white placeholder:text-slate-400 font-medium"
                     />
                   </div>
 
@@ -743,7 +743,7 @@ export default function OrganizerModal({
                       value={budgetNote}
                       onChange={(e) => setBudgetNote(e.target.value)}
                       placeholder="Hal. Budget: 300 petot (Bawal ang bimpo at picture frame!) 🎁"
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:border-red-500 focus:outline-none"
+                      className="w-full px-3.5 py-2.5 rounded-xl border-2 border-slate-300 text-sm focus:border-red-500 focus:outline-none text-slate-900 bg-white placeholder:text-slate-400 font-medium"
                     />
                   </div>
 
@@ -768,7 +768,7 @@ export default function OrganizerModal({
                         value={newPinInput}
                         onChange={(e) => setNewPinInput(e.target.value)}
                         placeholder="Bagong PIN (Hal. 2026)"
-                        className="flex-1 px-3.5 py-2 rounded-xl border border-slate-300 text-sm focus:border-red-500 focus:outline-none"
+                        className="flex-1 px-3.5 py-2.5 rounded-xl border-2 border-slate-300 text-sm focus:border-red-500 focus:outline-none text-slate-900 bg-white placeholder:text-slate-400 font-medium"
                       />
                       <button
                         type="submit"
