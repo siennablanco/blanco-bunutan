@@ -51,7 +51,7 @@ export default function DrawScreen({
   // Confirm identity and trigger draw
   const handleStartDraw = () => {
     if (!pairings || !pairings[selectedGiverId]) {
-      alert('Wait lang! Wala pang bunutan pool. Paki-shuffle muna ni Organizer 👑 sa settings sa taas!');
+      alert('Wait lang! Hindi pa na-shuffle ang bunutan. Paki-pindot muna kay Organizer 👑 ang settings sa taas para mag-shuffle!');
       return;
     }
 
@@ -86,7 +86,7 @@ export default function DrawScreen({
     setSelectedGiverId('');
     setIsConfirmingGiver(false);
 
-    setFeedbackToast(`Nice, ${prevName}! Pass the phone sa next biktima bago maging Marites! 😂📱`);
+    setFeedbackToast(`Ayan safe na, ${prevName}! Ipasa mo na sa next na bubunot bago ka pa magpahalata! 😂📱`);
     setTimeout(() => setFeedbackToast(''), 4500);
   };
 
@@ -106,7 +106,7 @@ export default function DrawScreen({
         <div className="flex items-center justify-between">
         <div className="flex items-center gap-1.5 flex-wrap">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-red-800/50 border border-red-500/40 text-yellow-200 text-xs font-bold rounded-full backdrop-blur-md">
-            <span>🍗</span> Walang silipan! Bawal Marites 👀
+            <span>🍗</span> Walang silipan, bawal cheater! 👀
           </span>
           <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-emerald-900/60 border border-emerald-400/40 text-emerald-200 text-[10px] font-bold rounded-full backdrop-blur-md" title="Naka-sync ang bunutan sa lahat ng devices!">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
@@ -136,11 +136,11 @@ export default function DrawScreen({
         <div className="text-xs text-emerald-200 font-bold">
           {remainingToDraw === 0 ? (
             <span className="text-yellow-300 font-extrabold animate-pulse text-sm">
-              🎉 Tapos na lahat bumunot! Tagayan at kainan na, shopping later! 🍻🛍️
+              🎉 Complete na ang bunutan! Videoke at kainan na, mamaya na ang regalo! 🎤🍻
             </span>
           ) : (
             <span>
-              🚨 <strong>{remainingToDraw}</strong> na lang bubunot! Galaw-galaw, lumalamig na ang lechon at shanghai! 🍗 ({drawnIds.length}/{participants.length} tapos)
+              🚨 <strong>{remainingToDraw}</strong> na lang ang 'di pa nakakabunot! Bilisan niyo baka maubos ang shanghai! 🍗 ({drawnIds.length}/{participants.length} done)
             </span>
           )}
         </div>
@@ -169,10 +169,10 @@ export default function DrawScreen({
 
             <div className="space-y-2">
               <h3 className="text-2xl font-holiday font-bold text-red-600 tracking-wide">
-                🥁 DRUMROLL! KABA LEVEL 999?! 😱
+                🥁 Huminga ka muna nang malalim...
               </h3>
               <p className="text-xs sm:text-sm text-slate-700 font-bold animate-pulse">
-                "Lord, sana easy to please 'tong mabubunot ko..." 🙏😂
+                "Lord, sana madaling regaluhan 'tong mabubunot ko... 'wag po sana yung mapili!" 🙏😂
               </p>
             </div>
 
@@ -189,11 +189,11 @@ export default function DrawScreen({
           <div className="py-4 text-center space-y-5 animate-fadeIn">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-yellow-100 border border-yellow-300 rounded-full text-yellow-900 text-xs font-extrabold uppercase tracking-wider animate-bounce">
               <Sparkles className="w-3.5 h-3.5 text-yellow-600" />
-              🎉 TADHANA NA NAG-DECIDE! (BAWAL SWAP!) 🔒
+              Tadhana na 'to, bawal swap! ✨
             </div>
 
             <div className="text-slate-700 text-sm font-semibold">
-              Hoy <span className="font-extrabold text-slate-900 text-base">{selectedGiver?.name}</span>! Ready ka na? Ang nabunot mo ay si:
+              O eto na <span className="font-extrabold text-slate-900 text-base">{selectedGiver?.name}</span>, ang nabunot mo ay si:
             </div>
 
             {/* Glowing Big Celebratory Name Card */}
@@ -206,18 +206,18 @@ export default function DrawScreen({
               </span>
 
               <div className="text-xs uppercase tracking-widest text-yellow-200 font-bold mb-1">
-                Your Secret Monito / Monita 🎁
+                Your Monito / Monita 🎁
               </div>
               <div className="text-3xl sm:text-5xl font-holiday font-bold tracking-wide drop-shadow-lg text-yellow-300 py-1">
                 {revealedResult.name}
               </div>
 
               <div className="mt-4 pt-3 border-t border-white/20 bg-black/15 rounded-2xl p-3 text-xs sm:text-sm text-amber-100">
-                <span className="font-bold text-yellow-200 block mb-0.5">💡 Wishlist Hint:</span>
+                <span className="font-bold text-yellow-200 block mb-0.5">💡 Request / Wishlist:</span>
                 {revealedResult.wishlist ? (
                   <span className="italic font-medium">"{revealedResult.wishlist}"</span>
                 ) : (
-                  <span className="italic font-medium">"Walang wishlist... Bahala na diskarte mo haha! 😂"</span>
+                  <span className="italic font-medium">"Walang nilagay na wishlist... bahala ka na sa diskarte mo haha."</span>
                 )}
               </div>
             </div>
@@ -226,11 +226,12 @@ export default function DrawScreen({
             <div className="bg-amber-50 border-2 border-amber-200 rounded-2xl p-3.5 text-xs text-amber-900 space-y-1 text-left">
               <div className="flex items-center gap-1.5 font-extrabold text-amber-800">
                 <span>🤫</span>
-                <span>TOP SECRET! BAWAL MAG-PARINIG SA GROUP CHAT!</span>
+                <span>IMPORTANT RULES (WALANG BASAGAN NG TRIP):</span>
               </div>
               <p className="text-slate-600 pl-5">
-                • Bawal swap o mag-refund kahit 'di mo bet haha! 😂<br />
-                • Bukal sa puso dapat, pero bawal bimpo, photo album, at baso ng Nescafe! 🎁
+                • Bawal sumimangot o magpalit kahit 'di mo bet ang nabunot mo haha! 😂<br />
+                • ₱300 budget lang ha. Bawal bimpo, baso ng Nescafe, o picture frame! 🎁<br />
+                • Act natural pagbalik sa sala para 'di mahalata kung sino nabunot mo!
               </p>
             </div>
 
@@ -241,11 +242,11 @@ export default function DrawScreen({
                 className="w-full py-4 px-6 bg-gradient-to-r from-emerald-600 via-green-600 to-teal-600 hover:from-emerald-700 hover:to-green-700 text-white font-extrabold text-base sm:text-lg rounded-2xl shadow-xl transition-all transform active:scale-95 flex items-center justify-center gap-2 ring-4 ring-emerald-300/50"
               >
                 <span>📱</span>
-                <span>TAPOS NA AKO! IPASA SA NEXT BIKTIMA</span>
+                <span>Tapos na ko, pass the phone na!</span>
                 <ChevronRight className="w-5 h-5 shrink-0" />
               </button>
               <p className="text-[11px] text-slate-500 mt-2 font-medium">
-                Itatago agad 'to para safe ipasa at iwas-silip ng Marites! 👀
+                Pagpindot mo, kusa 'tong itatago para safe ibigay sa next na bubunot nang walang silipan.
               </p>
             </div>
           </div>
@@ -262,10 +263,10 @@ export default function DrawScreen({
 
             <div className="space-y-1.5">
               <h3 className="text-2xl font-bold text-slate-800">
-                Ikaw ba talaga si <span className="text-red-600 font-extrabold">{selectedGiver.name}</span>?
+                Sure ka ikaw si <span className="text-red-600 font-extrabold">{selectedGiver.name}</span>?
               </h3>
               <p className="text-xs sm:text-sm text-slate-600 max-w-sm mx-auto font-medium">
-                Walang lokohan ha, Pasko ngayon! Siguraduhing walang nakiki-usyoso sa likod mo! 👀
+                Walang identity theft please! Siguraduhing walang nakatayo sa likod mo na nakiki-usyoso 👀
               </p>
             </div>
 
@@ -275,7 +276,7 @@ export default function DrawScreen({
                 className="w-full py-3.5 px-6 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white font-extrabold text-base rounded-2xl shadow-lg transition-transform active:scale-95 flex items-center justify-center gap-2 ring-4 ring-red-200"
               >
                 <Gift className="w-5 h-5 text-yellow-300" />
-                OO AKO 'TO! BUNOT NA! 🎁
+                Ako nga 'to, bunot na! 🎁
               </button>
 
               <button
@@ -285,7 +286,7 @@ export default function DrawScreen({
                 }}
                 className="w-full py-2.5 px-4 text-xs font-bold text-slate-500 hover:text-red-600 transition-colors"
               >
-                Ay mali, cancel! 'Di ako 'yan 😂
+                Wait lang, maling tao napindot ko 😅
               </button>
             </div>
           </div>
@@ -303,23 +304,23 @@ export default function DrawScreen({
             <div className="space-y-2 max-w-md mx-auto">
               <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-xs font-extrabold">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                Tapos Ka Na Bumunot! 🎉
+                Nakabunot ka na kanina pa! ✔️
               </div>
 
               <h3 className="text-2xl font-extrabold text-slate-800">
-                Hoy! Nakabunot na si <span className="text-emerald-700">{selectedGiver.name}</span> kanina pa! 🎄
+                Hoy <span className="text-emerald-700">{selectedGiver.name}</span>, tapos ka na bumunot! 🎄
               </h3>
 
               <div className="p-4 bg-slate-50 border-2 border-slate-200 rounded-2xl text-xs sm:text-sm text-slate-600 space-y-2 text-left">
                 <div className="flex items-center gap-2 text-slate-800 font-extrabold">
                   <Lock className="w-4 h-4 text-red-600" />
-                  <span>LOCKED! BAWAL ANG MARITES 👀</span>
+                  <span>NAKA-LOCK NA ANG RESULT</span>
                 </div>
                 <p>
-                  Naka-lock na ang result para safe sa silipan at walang spoiler sa pamilya!
+                  Para iwas dulas at walang silipan sa pamilya, hindi na 'to pwedeng buksan ulit dito.
                 </p>
                 <p className="text-[11px] text-slate-500 italic pt-1 border-t border-slate-200 font-medium">
-                  💡 <em>Nakalimutan mo nabunot mo? Pabulong ka kay <strong>Organizer 👑</strong> pero magmakaawa ka muna haha!</em>
+                  💡 <em>Nakalimutan mo talaga kung sino nabunot mo? Lambingin mo si <strong>Organizer 👑</strong> para pabulong na i-check sa master list haha!</em>
                 </p>
               </div>
             </div>
@@ -329,7 +330,7 @@ export default function DrawScreen({
                 onClick={() => setSelectedGiverId('')}
                 className="w-full max-w-xs mx-auto py-3 px-6 bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold rounded-xl shadow transition-transform active:scale-95 flex items-center justify-center gap-2"
               >
-                <span>Bumalik sa Listahan ↩️</span>
+                <span>Bumalik sa listahan ↩️</span>
               </button>
             </div>
           </div>
@@ -344,13 +345,13 @@ export default function DrawScreen({
             {/* Instruction title */}
             <div className="text-center space-y-1">
               <span className="text-xs font-bold text-red-600 uppercase tracking-wider flex items-center justify-center gap-1.5">
-                <Gift className="w-4 h-4" /> Step 1: Piliin ang Pangalan Mo (A–Z) 🔤
+                <Gift className="w-4 h-4" /> Step 1: Hanapin mo name mo dito (A to Z) 🔤
               </span>
               <h2 className="text-2xl font-bold text-slate-800">
                 Sino ka diyan? Piliin mo sarili mo 👇
               </h2>
               <p className="text-xs text-slate-500 font-medium">
-                Naka-A to Z para easy hanapin. Bawal magpanggap ha! 😂
+                Pindutin ang sarili mong pangalan. Bawal magpanggap na si bunso para makabunot ulit ha! 😂
               </p>
             </div>
 
@@ -362,7 +363,7 @@ export default function DrawScreen({
                   type="text"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="Search name mo dito..."
+                  placeholder="Search mo name mo dito..."
                   className="w-full pl-9 pr-4 py-2.5 text-xs rounded-xl border-2 border-slate-300 bg-white focus:border-red-400 focus:outline-none font-semibold text-slate-900 placeholder:text-slate-400"
                 />
               </div>
@@ -402,11 +403,11 @@ export default function DrawScreen({
                         <div className="text-[11px] font-semibold">
                           {isDrawn ? (
                             <span className="text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full inline-flex items-center gap-1 mt-0.5">
-                              ✓ Nakabunot na (Bawal swap)
+                              ✓ Nakabunot na (Bawal swap ha)
                             </span>
                           ) : (
                             <span className="text-red-600 font-semibold group-hover:underline">
-                              👉 Pindutin mo na! (Good luck!)
+                              👉 Ikaw na bunot, 'wag kabahan
                             </span>
                           )}
                         </div>
@@ -431,7 +432,7 @@ export default function DrawScreen({
             {(!pairings || Object.keys(pairings).length === 0) && (
               <div className="p-3 bg-amber-50 border border-amber-300 rounded-2xl text-xs text-amber-900 flex items-center justify-between gap-2">
                 <span>
-                  ⚠️ Paalala kay Organizer: I-click muna ang <strong>Organizer Settings</strong> sa itaas para mag-shuffle bago bumunot.
+                  ⚠️ Paalala kay Organizer: Paki-shuffle muna sa <strong>Organizer Settings</strong> sa itaas bago bumunot.
                 </span>
                 <button
                   onClick={onOpenOrganizer}
@@ -446,7 +447,7 @@ export default function DrawScreen({
             <div className="p-3 bg-slate-50 border border-slate-200 rounded-2xl text-[11px] text-slate-600 flex items-start gap-2">
               <Lock className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
               <span>
-                <strong>100% Anti-Marites:</strong> Auto-lock agad pagkabunot para walang spoiler at silipan. Si <strong>Organizer 👑</strong> lang ang may secret master list kung sakaling makalimutan!
+                <strong>Anti-Silip Rule:</strong> Naka-lock agad ang result pagkabunot para walang spoiler. Kapag nakalimutan mo kung sino nabunot mo, pabulong ka na lang kay <strong>Organizer 👑</strong>!
               </span>
             </div>
 

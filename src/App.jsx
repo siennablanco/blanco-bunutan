@@ -245,7 +245,7 @@ export default function App() {
       {/* Footer */}
       <footer className="text-center py-4 text-xs text-slate-400/80 z-20 border-t border-white/5">
         <p>
-          🎄 Merry Christmas, Blanco Family! 🎉 Bawal marites, walang silipan, at bawal swap! 🎁
+          🎄 Merry Christmas, Blanco Family! Bawal sumilip, bawal swap, enjoy the party! 🎁
         </p>
       </footer>
 
