@@ -242,13 +242,10 @@ export default function App() {
         />
       </main>
 
-      {/* Footer without any mention of kuripot */}
-      <footer className="text-center py-4 text-xs text-slate-400/80 z-20 border-t border-white/5 space-y-1">
+      {/* Footer */}
+      <footer className="text-center py-4 text-xs text-slate-400/80 z-20 border-t border-white/5">
         <p>
           🎄 Merry Christmas, Blanco Family! 🎉 Bawal marites, walang silipan, at bawal swap! 🎁
-        </p>
-        <p className="text-[10px] text-slate-500">
-          Organizer PIN: <span className="text-slate-400 font-mono font-bold">{organizerPin}</span> (click Organizer sa itaas para i-manage)
         </p>
       </footer>
 

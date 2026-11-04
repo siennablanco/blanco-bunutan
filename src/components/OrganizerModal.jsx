@@ -274,8 +274,7 @@ export default function OrganizerModal({
               Organizer Passcode 🔒
             </h3>
             <p className="text-sm text-slate-600 max-w-sm">
-              Enter ang PIN para ma-access ang controls at master list.
-              <span className="block text-xs text-slate-400 mt-1">(Default PIN: 1234)</span>
+              Enter ang PIN para ma-access ang controls at secret master list.
             </p>
 
             <form onSubmit={handlePinSubmit} className="w-full max-w-xs space-y-3">
